@@ -1,6 +1,6 @@
-package br.com.hmv.services.validation.criacao;
+package br.com.hmv.services.validation.convenio.criacao;
 
-import br.com.hmv.dtos.request.UserInsertRequestDTO;
+import br.com.hmv.dtos.request.ConvenioInsertRequestDTO;
 import br.com.hmv.exceptions.FieldMessage;
 import br.com.hmv.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -13,24 +13,18 @@ import java.util.List;
 
 @AllArgsConstructor
 @Log4j2
-public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertRequestDTO> {
+public class ConvenioInsertValidator implements ConstraintValidator<ConvenioInsertValid, ConvenioInsertRequestDTO> {
 
 	private UserRepository repository;
 	
 	@Override
-	public void initialize(UserInsertValid ann) {
+	public void initialize(ConvenioInsertValid ann) {
 	}
 
 	@Override
-	public boolean isValid(UserInsertRequestDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(ConvenioInsertRequestDTO dto, ConstraintValidatorContext context) {
 		
 		List<FieldMessage> list = new ArrayList<>();
-		var user = repository.findByEmail(dto.getEmail());
-
-		if (user != null) {
-			log.info(String.format("Não é possivel cadastrar este email, está em uso por outro usuário: %s",user.getEmail()));
-			list.add(new FieldMessage("email", "Não é possível cadastrar este email, está em uso por outro usuário"));
-		}
 
 		for (FieldMessage e : list) {
 			context.disableDefaultConstraintViolation();

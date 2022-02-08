@@ -1,4 +1,4 @@
-package br.com.hmv.services.validation.atualizacao;
+package br.com.hmv.services.validation.convenio.criacao;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -7,11 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UserUpdateValidator.class)
+@Constraint(validatedBy = ConvenioInsertValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface UserUpdateValid {
+public @interface ConvenioInsertValid {
 	String message() default "Validation error";
 
 	Class<?>[] groups() default {};

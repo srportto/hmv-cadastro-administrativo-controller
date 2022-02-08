@@ -1,6 +1,5 @@
 package br.com.hmv.configurations.components;
 
-import br.com.hmv.models.entities.User;
 import br.com.hmv.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
