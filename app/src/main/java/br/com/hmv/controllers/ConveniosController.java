@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/convenios")
 @AllArgsConstructor
 public class ConveniosController {
     private ConvenioService service;

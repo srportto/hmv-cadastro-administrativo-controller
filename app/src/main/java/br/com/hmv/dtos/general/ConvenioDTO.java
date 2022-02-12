@@ -18,7 +18,6 @@ public class ConvenioDTO implements Serializable {
 
 	private Long id;
 
-	@NotBlank(message = "Campo descricao é obrigatório")
 	private String descricao;
 
 	private StatusConvenioEnum statusConvenio;

@@ -2,7 +2,6 @@ package br.com.hmv.services.validation.convenio.criacao;
 
 import br.com.hmv.dtos.request.ConvenioInsertRequestDTO;
 import br.com.hmv.exceptions.FieldMessage;
-import br.com.hmv.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,7 +14,6 @@ import java.util.List;
 @Log4j2
 public class ConvenioInsertValidator implements ConstraintValidator<ConvenioInsertValid, ConvenioInsertRequestDTO> {
 
-	private UserRepository repository;
 	
 	@Override
 	public void initialize(ConvenioInsertValid ann) {

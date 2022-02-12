@@ -2,46 +2,32 @@ package br.com.hmv.services;
 
 import br.com.hmv.dtos.general.ConvenioDTO;
 import br.com.hmv.dtos.request.ConvenioInsertRequestDTO;
-import br.com.hmv.dtos.request.UserInsertRequestDTO;
 import br.com.hmv.dtos.responses.ConvenioDefaultResponseDTO;
-import br.com.hmv.exceptions.DatabaseException;
-import br.com.hmv.exceptions.ResourceNotFoundException;
 import br.com.hmv.models.entities.Convenio;
-import br.com.hmv.repositories.RoleRepository;
-import br.com.hmv.repositories.UserRepository;
+import br.com.hmv.models.enums.StatusConvenioEnum;
+import br.com.hmv.repositories.ConvenioRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
-public class ConvenioService implements UserDetailsService {
+public class ConvenioService {
 	private static Logger logger = LoggerFactory.getLogger(ConvenioService.class);
 	
-	private BCryptPasswordEncoder passwordEncoder;
-	private UserRepository repository;
-	private RoleRepository roleRepository;
+
+	private ConvenioRepository repository;
+
 
 
 	@Transactional
 	public ConvenioDefaultResponseDTO insert(ConvenioInsertRequestDTO dto) {
 		Convenio entity = new Convenio();
-		copyDtoToEntity(dto, entity);
+		dtoToEntityOnCreate(dto, entity);
 		entity = repository.save(entity);
-		return new UserDefaultResponseDTO(entity);
+		return new ConvenioDefaultResponseDTO(entity);
 	}
 
 	//	@Transactional
@@ -86,8 +72,9 @@ public class ConvenioService implements UserDetailsService {
 //	}
 //
 //
-	private void copyDtoToEntity(ConvenioDTO dto, Convenio entity) {
+	private void dtoToEntityOnCreate(ConvenioDTO dto, Convenio entity) {
 		entity.setDescricao(dto.getDescricao());
+		entity.setCodigoStatusConvenio(StatusConvenioEnum.ATIVO.getCodigoStatusConvenio());
 	}
 
 }
