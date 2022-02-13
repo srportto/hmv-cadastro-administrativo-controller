@@ -2,6 +2,7 @@ package br.com.hmv.dtos.general;
 
 import br.com.hmv.models.entities.Convenio;
 import br.com.hmv.models.enums.StatusConvenioEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class ConvenioDTO implements Serializable {
 
 	private String descricao;
 
+	@JsonProperty("status")
 	private StatusConvenioEnum statusConvenio;
 
 	private LocalDateTime dataCriacao;
@@ -28,7 +30,6 @@ public class ConvenioDTO implements Serializable {
 
 	//? construtor diferenciado - de entity para DTO
 	public ConvenioDTO(Convenio convenio) {
-		super();
 		id = convenio.getId();
 		descricao = convenio.getDescricao();
 		statusConvenio = StatusConvenioEnum.obterStatusConvenio(convenio.getCodigoStatusConvenio());

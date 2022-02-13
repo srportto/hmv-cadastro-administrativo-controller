@@ -11,8 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ConvenioInsertValid
 public class ConvenioInsertRequestDTO extends ConvenioDTO {
-    private static final long serialVersionUID = 1L;
 
-    @NotBlank(message = "Campo password é obrigatório")
+    @NotBlank(message = "Campo descricao deve ser preenchido")
     private String descricao;
 }

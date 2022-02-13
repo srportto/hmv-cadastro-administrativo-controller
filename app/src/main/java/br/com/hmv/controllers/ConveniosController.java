@@ -1,11 +1,21 @@
 package br.com.hmv.controllers;
 
+import br.com.hmv.dtos.request.ConvenioAtualizaAllRequestDTO;
+import br.com.hmv.dtos.request.ConvenioAtualizaStatusRequestDTO;
 import br.com.hmv.dtos.request.ConvenioInsertRequestDTO;
 import br.com.hmv.dtos.responses.ConvenioDefaultResponseDTO;
 import br.com.hmv.services.ConvenioService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,36 +25,47 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/convenios")
+@RequestMapping(value = "api/convenios")
 @AllArgsConstructor
 public class ConveniosController {
+    private static Logger logger = LoggerFactory.getLogger(ConveniosController.class);
     private ConvenioService service;
 
     @PostMapping
-    public ResponseEntity<ConvenioDefaultResponseDTO> insert(@RequestBody @Valid ConvenioInsertRequestDTO dto) {
-        var newDto = service.insert(dto);
+    public ResponseEntity<ConvenioDefaultResponseDTO> insert(@RequestBody @Valid ConvenioInsertRequestDTO requestDTO) {
+        logger.info("solicitacao de inclusao {}", requestDTO );
+
+        var responseDTO = service.criacao(requestDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(newDto);
+                .buildAndExpand(responseDTO.getId()).toUri();
+
+        logger.info("solicitacao de inclusao concluida com sucesso {}", responseDTO.getId() );
+        return ResponseEntity.created(uri).body(responseDTO);
     }
 
-//    @PutMapping(value = "/{id}")
-//    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDTO dto) {
-//        UserDTO newDto = service.update(id, dto);
-//        return ResponseEntity.ok().body(newDto);
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Page<UserDefaultResponseDTO>> findAll(Pageable pageable) {
-//        Page<UserDefaultResponseDTO> list = service.findAllPaged(pageable);
-//        return ResponseEntity.ok().body(list);
-//    }
-//
-//    @GetMapping(value = "/{id}")
-//    public ResponseEntity<UserExtendsResponseDTO> findById(@PathVariable Long id) {
-//        UserExtendsResponseDTO dto = service.findById(id);
-//        return ResponseEntity.ok().body(dto);
-//    }
+    @PatchMapping( value = "/{id}/status")
+    public ResponseEntity<ConvenioDefaultResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaStatusRequestDTO requestDTO) {
+        ConvenioDefaultResponseDTO responseDTO = service.updateStatus(id, requestDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping( value = "/{id}")
+    public ResponseEntity<ConvenioDefaultResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaAllRequestDTO requestDTO) {
+        ConvenioDefaultResponseDTO responseDTO = service.updateAll(id, requestDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ConvenioDefaultResponseDTO>> findAll(Pageable pageable) {
+        Page<ConvenioDefaultResponseDTO> responseDtoInList = service.findAllPaged(pageable);
+        return ResponseEntity.ok().body(responseDtoInList);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ConvenioDefaultResponseDTO> findById(@PathVariable Long id) {
+        ConvenioDefaultResponseDTO responseDTO = service.findById(id);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 //
 //    @DeleteMapping(value = "/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
