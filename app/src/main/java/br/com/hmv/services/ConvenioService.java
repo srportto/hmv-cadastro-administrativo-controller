@@ -5,6 +5,7 @@ import br.com.hmv.dtos.request.ConvenioAtualizaAllRequestDTO;
 import br.com.hmv.dtos.request.ConvenioAtualizaStatusRequestDTO;
 import br.com.hmv.dtos.request.ConvenioInsertRequestDTO;
 import br.com.hmv.dtos.responses.ConvenioDefaultResponseDTO;
+import br.com.hmv.exceptions.DatabaseException;
 import br.com.hmv.exceptions.ResourceNotFoundException;
 import br.com.hmv.models.entities.Convenio;
 import br.com.hmv.models.enums.StatusConvenioEnum;
@@ -12,6 +13,8 @@ import br.com.hmv.repositories.ConvenioRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,7 +53,7 @@ public class ConvenioService {
 			return new ConvenioDefaultResponseDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Convenio nao encontrado: " + id);
+			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
 		}
 	}
 
@@ -67,22 +70,22 @@ public class ConvenioService {
 			return new ConvenioDefaultResponseDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Convenio nao encontrado: " + id);
+			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
 		}
 	}
 
-//
-//	public void delete(Long id) {
-//		try {
-//			repository.deleteById(id);
-//		}
-//		catch (EmptyResultDataAccessException e) {
-//			throw new ResourceNotFoundException("Id not found " + id);
-//		}
-//		catch (DataIntegrityViolationException e) {
-//			throw new DatabaseException("Integrity violation");
-//		}
-//	}
+	@Transactional
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		}
+		catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation - Ao deletar convenio id: " + id);
+		}
+	}
 
 	@Transactional(readOnly = true)
 	public Page<ConvenioDefaultResponseDTO> findAllPaged(Pageable pageable) {
@@ -93,7 +96,7 @@ public class ConvenioService {
 	@Transactional(readOnly = true)
 	public ConvenioDefaultResponseDTO findById(Long id) {
 		Optional<Convenio> obj = repository.findById(id);
-		Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Convenio não encontrado"));
+		Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Convenio nao encontrado id: " + id));
 		return new ConvenioDefaultResponseDTO(entity);
 	}
 
