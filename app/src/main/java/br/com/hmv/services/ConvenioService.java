@@ -26,84 +26,109 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ConvenioService {
-	private static Logger logger = LoggerFactory.getLogger(ConvenioService.class);
-	private ConvenioRepository repository;
+    private static Logger logger = LoggerFactory.getLogger(ConvenioService.class);
+    private ConvenioRepository repository;
 
-	@Transactional
-	public ConvenioDefaultResponseDTO criacao(ConvenioInsertRequestDTO dto) {
-		logger.info("solicitacao de inclusao {}", dto );
+    @Transactional
+    public ConvenioDefaultResponseDTO criacao(ConvenioInsertRequestDTO dto) {
+        String logCode = "criacao(ConvenioInsertRequestDTO)";
+        logger.info("{} - solicitacao de inclusao {}", logCode, dto);
 
-		Convenio entity = new Convenio();
-		dtoToEntityOnCreate(dto, entity);
-		entity = repository.save(entity);
+        Convenio entity = new Convenio();
+        dtoToEntityOnCreate(dto, entity);
+        entity = repository.save(entity);
 
-		logger.info("Convenio incluido com sucesso {}",entity );
-		return new ConvenioDefaultResponseDTO(entity);
-	}
+        logger.info("{} - Convenio incluido com sucesso {}", logCode, entity);
+        return new ConvenioDefaultResponseDTO(entity);
+    }
 
-	@Transactional
-	public ConvenioDefaultResponseDTO updateStatus(Long id, ConvenioAtualizaStatusRequestDTO dto) {
-		try {
-			Convenio entity = repository.getOne(id);
+    @Transactional
+    public ConvenioDefaultResponseDTO updateStatus(Long id, ConvenioAtualizaStatusRequestDTO dto) {
+        String logCode = "updateStatus(long)";
+        logger.info("{} - solicitacao de atualizacao de status {}", logCode, dto);
 
-			//passa status novo
-			entity.setCodigoStatusConvenio(dto.getStatusConvenioEnum().getCodigoStatusConvenio());
+        try {
+            Convenio entity = repository.getOne(id);
 
-			entity = repository.save(entity);
-			return new ConvenioDefaultResponseDTO(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
-		}
-	}
+            //passa status novo
+            entity.setCodigoStatusConvenio(dto.getStatusConvenioEnum().getCodigoStatusConvenio());
+            entity = repository.save(entity);
 
-	@Transactional
-	public ConvenioDefaultResponseDTO updateAll(Long id, ConvenioAtualizaAllRequestDTO dto) {
-		try {
-			Convenio entity = repository.getOne(id);
+            logger.info("{} - atualizacao realizada com sucesso {}", logCode, entity);
+            return new ConvenioDefaultResponseDTO(entity);
+        } catch (EntityNotFoundException e) {
+            logger.warn("{} - recurso nao encontrado id: {} ", id);
+            throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
+        }
+    }
 
-			//Passa dados atualizados
-			entity.setCodigoStatusConvenio(dto.getStatusConvenioEnum().getCodigoStatusConvenio());
-			entity.setDescricao(dto.getDescricao());
+    @Transactional
+    public ConvenioDefaultResponseDTO updateAll(Long id, ConvenioAtualizaAllRequestDTO dto) {
+        String logCode = "updateAll(Long,ConvenioAtualizaAllRequestDTO)";
+        logger.info("{} - atualizando recurso: {}", logCode, dto);
 
-			entity = repository.save(entity);
-			return new ConvenioDefaultResponseDTO(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
-		}
-	}
+        try {
+            Convenio entity = repository.getOne(id);
+            //Passa dados atualizados
+            entity.setCodigoStatusConvenio(dto.getStatusConvenioEnum().getCodigoStatusConvenio());
+            entity.setDescricao(dto.getDescricao());
+            entity = repository.save(entity);
 
-	@Transactional
-	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		}
-		catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
-		}
-		catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation - Ao deletar convenio id: " + id);
-		}
-	}
+            logger.info("{} - recurso atualizado id: {}", logCode, entity);
+            return new ConvenioDefaultResponseDTO(entity);
 
-	@Transactional(readOnly = true)
-	public Page<ConvenioDefaultResponseDTO> findAllPaged(Pageable pageable) {
-		Page<Convenio> list = repository.findAll(pageable);
-		return list.map(itemConvenioEntity -> new ConvenioDefaultResponseDTO(itemConvenioEntity));
-	}
+        } catch (EntityNotFoundException e) {
+            logger.warn("{} - recurso nao encontrado id: {}", logCode, id);
+            throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
+        }
+    }
 
-	@Transactional(readOnly = true)
-	public ConvenioDefaultResponseDTO findById(Long id) {
-		Optional<Convenio> obj = repository.findById(id);
-		Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Convenio nao encontrado id: " + id));
-		return new ConvenioDefaultResponseDTO(entity);
-	}
+    @Transactional
+    public void delete(Long id) {
+        String logCode = "delete(Long)";
+        logger.info("{} - deletando recurso: {}", logCode, id);
 
-	private void dtoToEntityOnCreate(ConvenioDTO dto, Convenio entity) {
-		logger.info("Convertendo dto de cricao para entity {}", dto );
+        try {
+            repository.deleteById(id);
+            logger.info("{} - recurso deletado com sucesso: {}", logCode, id);
 
-		entity.setDescricao(dto.getDescricao());
-		entity.setCodigoStatusConvenio(StatusConvenioEnum.ATIVO.getCodigoStatusConvenio());
-	}
+        } catch (EmptyResultDataAccessException e) {
+            logger.warn("{} - recurso nao encontrado: {}", logCode, id);
+            throw new ResourceNotFoundException("Convenio nao encontrado id: " + id);
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("{} - erro de integridade de dados: {}", logCode, id);
+            throw new DatabaseException("Integrity violation - Ao deletar convenio id: " + id);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ConvenioDefaultResponseDTO> findAllPaged(Pageable pageable) {
+        String logCode = "findAllPaged(Pageable)";
+        logger.info("{} - consulta paginada de recursos vide parametros {}", logCode, pageable);
+
+        Page<Convenio> list = repository.findAll(pageable);
+        logger.info("{} - consulta paginada de recursos realizada com sucesso: {}", logCode, list);
+        return list.map(itemConvenioEntity -> new ConvenioDefaultResponseDTO(itemConvenioEntity));
+    }
+
+    @Transactional(readOnly = true)
+    public ConvenioDefaultResponseDTO findById(Long id) {
+        String logCode = "findById(Long)";
+        logger.info("{} - buscando recurso pelo id: {}", logCode, id);
+
+        Optional<Convenio> obj = repository.findById(id);
+        Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Convenio nao encontrado id: " + id));
+
+        logger.info("{} - recurso encontrado: {}", logCode, entity);
+        return new ConvenioDefaultResponseDTO(entity);
+    }
+
+    private void dtoToEntityOnCreate(ConvenioDTO dto, Convenio entity) {
+        String logCode = "dtoToEntityOnCreate(ConvenioDTO, Convenio)";
+        logger.info("{} - convertendo dto de cricao para entity {}", logCode, dto);
+
+        entity.setDescricao(dto.getDescricao());
+        entity.setCodigoStatusConvenio(StatusConvenioEnum.ATIVO.getCodigoStatusConvenio());
+        logger.info("{} - conversao realizada com sucesso {}", logCode, entity);
+    }
 }
