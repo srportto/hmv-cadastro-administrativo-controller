@@ -34,43 +34,69 @@ public class ConveniosController {
 
     @PostMapping
     public ResponseEntity<ConvenioDefaultResponseDTO> insert(@RequestBody @Valid ConvenioInsertRequestDTO requestDTO) {
-        logger.info("solicitacao de inclusao {}", requestDTO );
+        String logCode = "insert(ConvenioInsertRequestDTO)";
+        logger.info("{} - solicitacao de inclusao {}", logCode, requestDTO);
 
         var responseDTO = service.criacao(requestDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(responseDTO.getId()).toUri();
 
-        logger.info("solicitacao de inclusao concluida com sucesso {}", responseDTO.getId() );
+        logger.info("{} - solicitacao de inclusao concluida com sucesso {}", logCode, responseDTO);
         return ResponseEntity.created(uri).body(responseDTO);
     }
 
-    @PatchMapping( value = "/{id}/status")
-    public ResponseEntity<ConvenioDefaultResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaStatusRequestDTO requestDTO) {
+    @PatchMapping(value = "/{id}/status")
+    public ResponseEntity<ConvenioDefaultResponseDTO> updateStatus(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaStatusRequestDTO requestDTO) {
+        String logCode = "updateStatus(Long, ConvenioAtualizaStatusRequestDTO)";
+        logger.info("{} - solicitacao de atualizacao de status {}", logCode, requestDTO);
+
         ConvenioDefaultResponseDTO responseDTO = service.updateStatus(id, requestDTO);
+
+        logger.info("{} - solicitacao de atualizacao concluida com sucesso {}", logCode, requestDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PutMapping( value = "/{id}")
-    public ResponseEntity<ConvenioDefaultResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaAllRequestDTO requestDTO) {
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ConvenioDefaultResponseDTO> updateAll(@PathVariable Long id, @RequestBody @Valid ConvenioAtualizaAllRequestDTO requestDTO) {
+        String logCode = "updateAll(Long, ConvenioAtualizaAllRequestDTO)";
+        logger.info("{} - solicitacao de atualizacao total {}", logCode, requestDTO);
+
         ConvenioDefaultResponseDTO responseDTO = service.updateAll(id, requestDTO);
+
+        logger.info("{} - solicitacao de atualizacao total concluida com sucesso {}", logCode, requestDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping
     public ResponseEntity<Page<ConvenioDefaultResponseDTO>> findAll(Pageable pageable) {
+        String logCode = "findAll(Pageable)";
+        logger.info("{} - solicitacao de consulta todos paginada {}", logCode, pageable);
+
         Page<ConvenioDefaultResponseDTO> responseDtoInList = service.findAllPaged(pageable);
+
+        logger.info("{} - solicitacao de consulta todos paginada realizada com sucesso{}", logCode, pageable);
         return ResponseEntity.ok().body(responseDtoInList);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ConvenioDefaultResponseDTO> findById(@PathVariable Long id) {
+        String logCode = "findById(Long)";
+        logger.info("{} - solicitacao de consulta detalhe {}", logCode, id);
+
         ConvenioDefaultResponseDTO responseDTO = service.findById(id);
+
+        logger.info("{} - solicitacao de consulta detalhe realizada com sucesso {}", logCode, responseDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        String logCode = "delete(Long)";
+        logger.info("{} - solicitacao de delete {}", logCode, id);
+
         service.delete(id);
+
+        logger.info("{} - solicitacao de delete realizada com sucesso {}", logCode, id);
         return ResponseEntity.noContent().build();
     }
 }
