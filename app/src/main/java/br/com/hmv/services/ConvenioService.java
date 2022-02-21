@@ -117,7 +117,7 @@ public class ConvenioService {
         logger.info("{} - buscando recurso pelo id: {}", logCode, id);
 
         Optional<Convenio> obj = repository.findById(id);
-        Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Convenio nao encontrado id: " + id));
+        Convenio entity = obj.orElseThrow(() -> new ResourceNotFoundException("Recurso nao encontrado id: " + id));
 
         logger.info("{} - recurso encontrado: {}", logCode, entity);
         return new ConvenioDefaultResponseDTO(entity);

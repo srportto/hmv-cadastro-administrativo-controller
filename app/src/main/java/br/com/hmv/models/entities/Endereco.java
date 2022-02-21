@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tb_convenios")
-public class Convenio implements Serializable {
+@Table(name = "tb_endereco")
+public class Endereco implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EqualsAndHashCode.Include
@@ -30,16 +30,27 @@ public class Convenio implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name="codigo_endereco", nullable = false, unique=true, length = 36)
+	private String codigoEndereco;
+
 	@Column(nullable = false)
 	private String descricao;
 
-	private Long codigoStatusConvenio;
+	@Column(nullable = false)
+	private String logradouro;
 
-	@CreationTimestamp
-	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataCriacao;
+	@Column(nullable = false)
+	private Integer numero;
 
-	@UpdateTimestamp
-	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataAtualizacao;
+	@Column(nullable = false)
+	private String complemento;
+
+	@Column(nullable = false)
+	private String cidade;
+
+	@Column(nullable = false)
+	private String uf;
+
+	@Column(nullable = false)
+	private Integer cep;
 }

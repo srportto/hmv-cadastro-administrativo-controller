@@ -16,9 +16,9 @@ public enum StatusConvenioEnum {
     }
 
     public static StatusConvenioEnum obterStatusConvenio(long codigoStatusConvenio) {
-        for (StatusConvenioEnum permissao : StatusConvenioEnum.values()) {
-            if (permissao.getCodigoStatusConvenio() == codigoStatusConvenio) {
-                return permissao;
+        for (StatusConvenioEnum status : StatusConvenioEnum.values()) {
+            if (status.getCodigoStatusConvenio() == codigoStatusConvenio) {
+                return status;
             }
         }
         throw new IllegalArgumentException(String.format("Status convenio %i não conhecido ",codigoStatusConvenio));
